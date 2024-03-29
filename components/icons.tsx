@@ -28,4 +28,69 @@ export const Icons = {
       ></path>
     </svg>
   ),
+  vessel: (props: LucideProps) => (
+    <svg viewBox="0 0 47 18" {...props}>
+      <path
+        d="M12.5702 16V7.53125H17.5038M34.7791 16L39 7.53125H29.1329V3.375L30.5425 1H17.8562L18.561 3.375V7.53125H15.7418L12.2178 1.59375L6 14.125"
+        stroke="currentColor"
+        fill="currentColor"
+      />
+      <path
+        d="M1 16.107C1.88235 15.0054 4.61765 13.1328 8.5 14.4546C13.3529 16.107 16 17.7593 20.8529 16.107C25.7059 14.4546 30.5588 13.3531 35.4118 16.107C39.2941 18.3101 44.0882 15.9234 46 14.4546"
+        stroke="currentColor"
+        fill="currentColor"
+      />
+    </svg>
+  ),
+  burger: (props: LucideProps) => (
+    <svg {...props} viewBox="0 0 21 20">
+      <path d="M0 1H21" stroke="currentColor" fill="currentColor" />
+      <path d="M0 7H21" stroke="currentColor" fill="currentColor" />
+      <path d="M0 13H21" stroke="currentColor" fill="currentColor" />
+      <path d="M0 19H21" stroke="currentColor" fill="currentColor" />
+    </svg>
+  ),
+  eye: (props: LucideProps) => (
+    <svg viewBox="0 0 32 19" {...props}>
+      <path
+        d="M16 1C7.47368 1 2.44737 7.18182 1 10.2727C3.5 12.8485 10 18 16 18C22 18 28.5 12.8485 31 10.2727C29.5526 7.18182 24.5263 1 16 1Z"
+        stroke="currentColor"
+        fill="currentColor"
+      />
+      <path
+        d="M21.8159 9.11364C21.8159 12.2416 19.2222 14.7955 16.0001 14.7955C12.778 14.7955 10.1843 12.2416 10.1843 9.11364C10.1843 5.98571 12.778 3.43182 16.0001 3.43182C19.2222 3.43182 21.8159 5.98571 21.8159 9.11364Z"
+        stroke="currentColor"
+        fill="currentColor"
+      />
+      <path
+        d="M18.6578 9.11364C18.6578 10.5345 17.478 11.7046 15.9999 11.7046C14.5219 11.7046 13.342 10.5345 13.342 9.11364C13.342 7.69278 14.5219 6.52274 15.9999 6.52274C17.478 6.52274 18.6578 7.69278 18.6578 9.11364Z"
+        stroke="currentColor"
+        fill="currentColor"
+      />
+    </svg>
+  ),
+  map: (props: LucideProps) => (
+    <svg viewBox="0 0 36 38" {...props}>
+      <path
+        d="M6.5 10L1.5 36.5L15.5 33L17.5 36.5L31.5 33L34.5 16.5H30L28.5 5.5"
+        stroke="currentColor"
+        fill="currentColor"
+      />
+      <path
+        d="M18.2977 4.96C19.1715 7.264 20.1182 9.28 20.4823 10C21.2104 8.92 21.9242 7.16278 22.6668 4.96C23.7591 1.72 21.9386 1 20.4822 1C19.39 1 17.2054 2.08 18.2977 4.96Z"
+        stroke="currentColor"
+        fill="currentColor"
+      />
+      <path
+        d="M10.2977 14.96C11.1715 17.264 12.1182 19.28 12.4823 20C13.2104 18.92 13.9242 17.1628 14.6668 14.96C15.7591 11.72 13.9386 11 12.4822 11C11.39 11 9.20541 12.08 10.2977 14.96Z"
+        stroke="currentColor"
+        fill="currentColor"
+      />
+      <path
+        d="M20.2977 23.96C21.1715 26.264 22.1182 28.28 22.4823 29C23.2104 27.92 23.9242 26.1628 24.6668 23.96C25.7591 20.72 23.9386 20 22.4822 20C21.39 20 19.2054 21.08 20.2977 23.96Z"
+        stroke="currentColor"
+        fill="currentColor"
+      />
+    </svg>
+  ),
 }
