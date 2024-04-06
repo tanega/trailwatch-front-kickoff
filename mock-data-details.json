@@ -1,0 +1,40 @@
+{
+  "ampDetails": {
+    "id": "amp-1",
+    "label": "Réserve naturelle nationale de la Baie de l'Aiguillon",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In aliquet lacus sed neque pharetra, sed vestibulum erat fringilla. Suspendisse vitae sapien viverra, fringilla quam ut, tincidunt felis. Cras ultrices sit amet ante vel posuere. Sed cursus luctus lectus, vitae mollis ligula condimentum eget. Suspendisse sit amet condimentum mi, eu viverra metus. ",
+    "relatedItemsType": "vessels",
+    "relatedItems": [
+      {
+        "id": "vessel-1",
+        "title": "Prins Bernhard",
+        "description": "IMO 8224406 / MMSI 227302000 / 46 mètre",
+        "value": "1435h"
+      },
+      {
+        "id": "vessel-2",
+        "title": "Nom navire",
+        "description": "IMO 8224406 / MMSI 227302000 / 46 mètre",
+        "value": "904h"
+      },
+      {
+        "id": "vessel-3",
+        "title": "Nom navire",
+        "description": "IMO 8224406 / MMSI 227302000 / 46 mètre",
+        "value": "761h"
+      },
+      {
+        "id": "vessel-4",
+        "title": "Nom navire",
+        "description": "IMO 8224406 / MMSI 227302000 / 46 mètre",
+        "value": "320h"
+      },
+      {
+        "id": "vessel-5",
+        "title": "Nom navire",
+        "description": "IMO 8224406 / MMSI 227302000 / 46 mètre",
+        "value": "320h"
+      }
+    ]
+  }
+}
