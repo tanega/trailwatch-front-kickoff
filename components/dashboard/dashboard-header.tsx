@@ -1,10 +1,17 @@
-import Image from 'next/image';
+'use client';
 
+import Image from 'next/image';
 import TrawlWatchLogo from '@/public/trawlwatch.svg';
 import MapIcon from '@/public/map-icon.svg';
-
+import { useRouter } from 'next/navigation';
 
 export default function DashboardHeader() {
+  const router = useRouter();
+
+  const onClickMapView = () => {
+    router.push("/map");
+  }
+
   return (
     <div className="flex pt-5 w-full">
       <div className="w-full">
@@ -16,7 +23,7 @@ export default function DashboardHeader() {
           />
       </div>
 
-      <div className="flex inline items-center">
+      <button className="flex inline items-center hover:cursor-pointer" onClick={onClickMapView}>
         <Image
           src={MapIcon}
           alt="Map view"
@@ -24,7 +31,7 @@ export default function DashboardHeader() {
           width={30}
           />
         <div className="inline text-color-1 font-bold ml-2 mr-5">Map&nbsp;view</div>  
-      </div>
+      </button>
     </div>
   );
 }
