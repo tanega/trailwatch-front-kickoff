@@ -4,6 +4,7 @@ export type Item = {
   title: string;
   description: string;
   value: string;
+  type: string;
 }
 
 export type ItemDetails = {

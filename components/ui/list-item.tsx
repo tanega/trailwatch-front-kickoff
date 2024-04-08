@@ -2,7 +2,7 @@
 
 import { Item } from "@/types/item";
 import Button from "./button";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 type Props = {
   item: Item;
@@ -10,12 +10,12 @@ type Props = {
 }
 
 export default function ListItem({ item, enableViewDetails }: Props) {
+  const { id, title, description, value, type } = item;
   const router = useRouter();
-  const { title, description, value } = item;
   let showViewDetailsButton = !!enableViewDetails;
 
-  const onClickView = () => {
-    router.push("/details"); // TODO: change redirect logic to be SSR + with variables 
+  const onClickViewDetails = () => {
+    router.push(`/details/${type}/${id}`);
   }
 
   return (
@@ -32,7 +32,7 @@ export default function ListItem({ item, enableViewDetails }: Props) {
           <Button
             title="View"
             withArrowIcon
-            onClick={onClickView}
+            onClick={onClickViewDetails}
           />
         )}
       </div>
