@@ -2,9 +2,9 @@ import DemoMap from "@/components/map/Core"
 
 export default function MapPage() {
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
+    <section className="container grid gap-6 items-center pt-6 pb-8 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
-        <DemoMap />;
+        <DemoMap />
       </div>
     </section>
   )
