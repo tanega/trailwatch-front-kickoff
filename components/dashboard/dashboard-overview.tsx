@@ -18,7 +18,7 @@ let fishingArea = mockData["fishing-area-km2"]
 
 export default function DashboardOverview() {
   return (
-    <section className="flex grid items-center">
+    <section className="grid">
       <div className="mb-2 w-full">
         <Dropdown
           className="float-right w-40"
