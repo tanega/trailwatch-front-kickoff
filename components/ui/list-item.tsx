@@ -3,8 +3,7 @@
 import { useRouter } from "next/navigation"
 
 import { Item } from "@/types/item"
-
-import Button from "./button"
+import Button from "@/components/ui/button"
 
 type Props = {
   item: Item
