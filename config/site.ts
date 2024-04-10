@@ -12,5 +12,5 @@ export const siteConfig = {
       title: "Map",
       href: "/map",
     },
-  ]
+  ],
 }

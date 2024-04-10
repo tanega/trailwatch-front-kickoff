@@ -1,37 +1,37 @@
-'use client';
+"use client"
 
-import Image from 'next/image';
-import TrawlWatchLogo from '@/public/trawlwatch.svg';
-import MapIcon from '@/public/map-icon.svg';
-import { useRouter } from 'next/navigation';
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import MapIcon from "@/public/map-icon.svg"
+import TrawlWatchLogo from "@/public/trawlwatch.svg"
 
 export default function DashboardHeader() {
-  const router = useRouter();
+  const router = useRouter()
 
   const onClickMapView = () => {
-    router.push("/map");
+    router.push("/map")
   }
 
   return (
-    <div className="flex pt-5 w-full">
+    <div className="flex w-full pt-5">
       <div className="w-full">
         <Image
           src={TrawlWatchLogo}
           alt="Trawlwatch logo"
           height={80}
           width={80}
-          />
+        />
       </div>
 
-      <button className="flex inline items-center hover:cursor-pointer" onClick={onClickMapView}>
-        <Image
-          src={MapIcon}
-          alt="Map view"
-          height={30}
-          width={30}
-          />
-        <div className="inline text-color-1 font-bold ml-2 mr-5">Map&nbsp;view</div>  
+      <button
+        className="inline flex items-center hover:cursor-pointer"
+        onClick={onClickMapView}
+      >
+        <Image src={MapIcon} alt="Map view" height={30} width={30} />
+        <div className="ml-2 mr-5 inline font-bold text-color-1">
+          Map&nbsp;view
+        </div>
       </button>
     </div>
-  );
+  )
 }

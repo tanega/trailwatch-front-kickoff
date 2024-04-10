@@ -1,51 +1,52 @@
-'use client';
+"use client"
 
-import KPICard from "@/components/dashboard/kpi-card"
-import Dropdown from "@/components/ui/dropdown";
+import mockData from "@/mock-data-dashboard.json"
+
+import Dropdown from "@/components/ui/dropdown"
 import ListCard from "@/components/ui/list-card"
-import mockData from "@/mock-data-dashboard.json";
+import KPICard from "@/components/dashboard/kpi-card"
 
 // TODO: use real data + load in server components
-let amps = mockData["top-amps"];
-let vessels = mockData["top-vessels"];
-let totalVesselsActive = mockData["total-vessels-active"];
-let totalVessels = mockData["total-vessels"];
-let totalAmpsVisited = mockData["total-amps-visited"];
-let totalAmps = mockData["total-amps"];
-let fishingEffort = mockData["fishing-effort-hours"];
-let fishingArea = mockData["fishing-area-km2"];
+let amps = mockData["top-amps"]
+let vessels = mockData["top-vessels"]
+let totalVesselsActive = mockData["total-vessels-active"]
+let totalVessels = mockData["total-vessels"]
+let totalAmpsVisited = mockData["total-amps-visited"]
+let totalAmps = mockData["total-amps"]
+let fishingEffort = mockData["fishing-effort-hours"]
+let fishingArea = mockData["fishing-area-km2"]
 
 export default function DashboardOverview() {
   return (
     <section className="flex grid items-center">
-      <div className="w-full mb-2">
+      <div className="mb-2 w-full">
         <Dropdown
-          className="w-40 float-right"
+          className="float-right w-40"
           options={["7 derniers jours", "30 derniers jours"]} // TODO: move in dedicated enum?
-          onSelect={(value) => console.log("selected: " + value)}/>
+          onSelect={(value) => console.log("selected: " + value)}
+        />
       </div>
 
       <div className="grid grid-cols-3 gap-x-3">
-
         <div className="col-span-1 h-full">
           <div className="grid grid-cols-1 gap-y-2">
             <KPICard
               title="Total vessels in Activity"
               kpiValue={totalVesselsActive}
               totalValue={totalVessels}
-              />
+            />
             <KPICard
               title="Total AMPs visited"
               kpiValue={totalAmps}
               totalValue={totalAmpsVisited}
-              />
+            />
             <KPICard
               title="Fishing effort"
               kpiValue={fishingEffort}
               kpiUnit="Hours"
               totalValue={fishingArea}
               totalUnit="Km2"
-              />
+            />
           </div>
         </div>
 
@@ -65,5 +66,5 @@ export default function DashboardOverview() {
         </div>
       </div>
     </section>
-  );
+  )
 }
