@@ -13,6 +13,17 @@ module.exports = {
       },
     },
     extend: {
+      fontSize: {
+        xxs: '0.58rem',
+        xxxs: '0.54rem'
+      },
+      borderWidth: {
+        '1': '1px'
+      },
+      height: {
+        '1/6': '13%',
+        '5/6': '87%'
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,6 +58,11 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        'color-1': '#2CE2B0',
+        'color-2': '#4F5B7B',
+        'color-3': '#26314C',
+        'color-4': '#A7ADBD',
+        'color-5': '#374056'
       },
       borderRadius: {
         lg: `var(--radius)`,
