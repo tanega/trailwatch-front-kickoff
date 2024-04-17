@@ -22,15 +22,20 @@ export default function ListItem({ item, enableViewDetails }: Props) {
   return (
     <div className="my-1.5 flex">
       <div className="flex w-full border-b-1 border-color-5">
-        <div className="pb-1 w-full">
-          <div className="text-white text-xxs">{title}</div>
+        <div className="w-full pb-1">
+          <div className="text-xxs text-white">{title}</div>
           <div className="text-xxxs text-color-4">{description}</div>
         </div>
         <div className="block text-sm text-white">{value}</div>
       </div>
-      <div className="flex ml-6">
+      <div className="ml-6 flex">
         {showViewDetailsButton && (
-          <Button title="View" withArrowIcon onClick={onClickViewDetails} />
+          <Button
+            title="View"
+            withArrowIcon
+            onClick={onClickViewDetails}
+            className="h-3/4 pl-2 pr-4"
+          />
         )}
       </div>
     </div>

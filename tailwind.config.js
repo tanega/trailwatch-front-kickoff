@@ -63,6 +63,7 @@ module.exports = {
         "color-3": "#26314C",
         "color-4": "#A7ADBD",
         "color-5": "#374056",
+        "color-6": "#FF7D53"
       },
       borderRadius: {
         lg: `var(--radius)`,

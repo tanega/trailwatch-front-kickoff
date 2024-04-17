@@ -7,15 +7,21 @@ import ArrowIcon from "@/public/right-arrow.svg"
 type Props = {
   title: string
   withArrowIcon?: boolean
-  onClick?: () => void
+  onClick: () => void
+  className?: string
 }
 
-export default function Button({ title, withArrowIcon, onClick }: Props) {
+export default function Button({
+  title,
+  withArrowIcon,
+  onClick,
+  className,
+}: Props) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex h-3/4 items-center rounded bg-color-1 pl-2 pr-4 text-xxs"
+      className={className + " flex items-center rounded bg-color-1 text-xxs"}
     >
       {title}
 

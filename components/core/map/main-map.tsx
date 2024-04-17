@@ -1,17 +1,14 @@
 "use client"
 
 import { useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
 import type { PickingInfo } from "@deck.gl/core"
 import { GeoJsonLayer } from "@deck.gl/layers"
 import { SimpleMeshLayer } from "@deck.gl/mesh-layers"
 import DeckGL from "@deck.gl/react"
-import { registerLoaders } from "@loaders.gl/core"
 import { OBJLoader } from "@loaders.gl/obj"
 import { MapViewState, ScatterplotLayer } from "deck.gl"
-import type { Feature, Geometry } from "geojson"
 import { useTheme } from "next-themes"
-import Map, { AttributionControl } from "react-map-gl/maplibre"
+import Map from "react-map-gl/maplibre"
 
 import { useMapStore } from "@/components/providers/map-store-provider"
 
@@ -148,7 +145,6 @@ export default function CoreMap() {
   const { viewState, setViewState } = useMapStore((state) => state)
 
   const layers = [tracksByVesselAndVoyage, mesh_layer, latestPositions]
-  console.log("layers", layers)
 
   return (
     <DeckGL
