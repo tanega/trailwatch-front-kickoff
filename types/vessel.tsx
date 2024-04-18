@@ -1,8 +1,8 @@
-export type VesselPositionDetails = {
-  id: string
-  label: string
-  description: string
-  timeInAMP: number
-  lastSeen: Date
-  coordinates: number[]
+export type VesselDetails = {
+  mmsi: string;
+  name: string;
+  type: string;
+  size: number;
+  position: number[];
+  positionUpdatedAt: Date;
 }
