@@ -3,10 +3,7 @@ import "@/styles/globals.css"
 import { Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
-import { fontSans } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
-import Sidebar from "@/components/core/sidebar"
-import { ThemeProvider } from "@/components/theme-provider"
+import { MapStoreProvider } from "@/components/providers/map-store-provider"
 
 export const metadata: Metadata = {
   title: {
@@ -31,23 +28,8 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <>
-      <html lang="fr" suppressHydrationWarning>
-        <head />
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <main className="flex relative flex-col min-h-screen">
-              <Sidebar />
-              <div className="flex-1">{children}</div>
-            </main>
-          </ThemeProvider>
-        </body>
-      </html>
-    </>
+    <section className="relative flex h-screen w-full flex-row">
+      <MapStoreProvider>{children}</MapStoreProvider>
+    </section>
   )
 }

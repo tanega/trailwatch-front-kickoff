@@ -13,7 +13,7 @@ export default function DashboardHeader() {
   }
 
   return (
-    <div className="flex pt-5 w-full">
+    <div className="flex w-full pt-5">
       <div className="w-full">
         <Image
           src={TrawlWatchLogo}
@@ -28,7 +28,7 @@ export default function DashboardHeader() {
         onClick={onClickMapView}
       >
         <Image src={MapIcon} alt="Map view" height={30} width={30} />
-        <div className="inline mr-5 ml-2 font-bold text-color-1">
+        <div className="ml-2 mr-5 inline font-bold text-color-1">
           Map&nbsp;view
         </div>
       </button>
