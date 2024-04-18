@@ -1,7 +1,6 @@
 import LeftPanel from "@/components/core/left-panel"
 import MapControls from "@/components/core/map-controls"
-import DemoMap from "@/components/core/map/Core"
-import { MapStoreProvider } from "@/components/providers/map-store-provider"
+import DemoMap from "@/components/core/map/main-map"
 
 export default function MapPage() {
   return (
