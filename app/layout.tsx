@@ -3,8 +3,6 @@ import "@/styles/globals.css"
 import { Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
-import { fontSans } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
@@ -31,7 +29,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" className="light" suppressHydrationWarning>
         <head>
           <meta charSet="UTF-8" />
           <meta

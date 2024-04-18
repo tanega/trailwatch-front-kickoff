@@ -14,7 +14,7 @@ import {
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion"
 import { Ship as ShipIcon } from "lucide-react"
 
-import NavigationLink from "@/components/core/navigation-link"
+import NavigationLink from "@/components/ui/navigation-link"
 
 const containerVariants = {
   close: {

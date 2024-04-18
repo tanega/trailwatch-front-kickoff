@@ -3,10 +3,6 @@ import "@/styles/globals.css"
 import { Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
-import { fontSans } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
-import Sidebar from "@/components/core/sidebar"
-import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   title: {

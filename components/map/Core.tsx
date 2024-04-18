@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import type { PickingInfo } from "@deck.gl/core"
 import { GeoJsonLayer } from "@deck.gl/layers"
 import DeckGL from "@deck.gl/react"
 import type { Feature, Geometry } from "geojson"
+import { useTheme } from "next-themes"
 import Map, { AttributionControl } from "react-map-gl/maplibre"
 
 // Viewport settings
@@ -63,6 +63,10 @@ const vesselTrailsLayer = new GeoJsonLayer<PropertiesType>({
 })
 
 export default function CoreMap() {
+  const { setTheme, theme } = useTheme()
+  useEffect(() => {
+    setTheme("light")
+  }, [setTheme])
   const router = useRouter()
   console.log(router)
   // const { lat, lng, zoom } = router.query
