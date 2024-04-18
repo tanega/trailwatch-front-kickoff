@@ -3,6 +3,7 @@ import "@/styles/globals.css"
 import { Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
+import { MapStoreProvider } from "@/components/providers/map-store-provider"
 
 export const metadata: Metadata = {
   title: {
@@ -28,7 +29,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <section className="relative flex h-screen w-full flex-row">
-      {children}
+      <MapStoreProvider>{children}</MapStoreProvider>
     </section>
   )
 }

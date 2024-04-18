@@ -15,6 +15,7 @@ import { AnimatePresence, motion, useAnimationControls } from "framer-motion"
 import { Ship as ShipIcon } from "lucide-react"
 
 import NavigationLink from "@/components/ui/navigation-link"
+import { useMapStore } from "@/components/providers/map-store-provider"
 
 const containerVariants = {
   close: {
@@ -79,8 +80,8 @@ const LeftPanel = () => {
             <Image
               src={TrawlWatchLogo}
               alt="Trawlwatch logo"
-              height={40}
-              width={40}
+              height={80}
+              width={80}
             />
           )}
           <button

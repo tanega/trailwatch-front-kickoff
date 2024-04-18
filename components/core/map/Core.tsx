@@ -4,21 +4,12 @@ import { useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { GeoJsonLayer } from "@deck.gl/layers"
 import DeckGL from "@deck.gl/react"
+import { MapViewState } from "deck.gl"
 import type { Feature, Geometry } from "geojson"
 import { useTheme } from "next-themes"
 import Map, { AttributionControl } from "react-map-gl/maplibre"
 
-// Viewport settings
-const INITIAL_VIEW_STATE = {
-  longitude: 3.788086,
-  latitude: 47.840291,
-  zoom: 5,
-  // longitude: -122.4,
-  // latitude: 37.74,
-  // zoom: 11,
-  pitch: 0,
-  bearing: 0,
-}
+import { useMapStore } from "@/components/providers/map-store-provider"
 
 type PropertiesType = {
   index: number
@@ -45,7 +36,7 @@ type ExamplePropertiesType = {
 
 const vesselTrailsLayer = new GeoJsonLayer<PropertiesType>({
   id: "GeoJsonLayer2",
-  data: "http://localhost:3000/geometries/vessels_segments.geo.json",
+  data: `${process.env.NEXT_PUBLIC_DOMAIN}/geometries/vessels_segments.geo.json`,
   // data: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart.geo.json",
   getFillColor: [160, 160, 180, 200],
   getLineColor: [135, 24, 245, 200],
@@ -67,39 +58,19 @@ export default function CoreMap() {
   useEffect(() => {
     setTheme("light")
   }, [setTheme])
-  const router = useRouter()
-  console.log(router)
-  // const { lat, lng, zoom } = router.query
-  // console.log(lat, lng, zoom)
-  // Default viewport settings
-  // const [viewport, setViewport] = useState({
-  //   latitude: parseFloat(lat as string) || 37.7751,
-  //   longitude: parseFloat(lng as string) || -122.4193,
-  //   zoom: parseFloat(zoom as string) || 10,
-  //   bearing: 0,
-  //   pitch: 0,
-  // })
 
-  // Update viewport when URL parameters change
-  // useEffect(() => {
-  //   setViewport((v) => ({
-  //     ...v,
-  //     latitude: parseFloat(lat) || v.latitude,
-  //     longitude: parseFloat(lng) || v.longitude,
-  //     zoom: parseFloat(zoom) || v.zoom,
-  //   }))
-  // }, [lat, lng, zoom])
+  const { viewState, setViewState } = useMapStore((state) => state)
 
   const layers = [vesselTrailsLayer]
-  console.log(layers)
   return (
     <DeckGL
-      initialViewState={INITIAL_VIEW_STATE}
+      viewState={viewState}
       controller={true}
       layers={layers}
+      onViewStateChange={(e) => setViewState(e.viewState as MapViewState)}
     >
       <Map
-        mapStyle="https://api.maptiler.com/maps/25f8f6d1-4c43-47ad-826a-14b40a83286f/style.json?key=DUka2d6KQoT6g8rx4RnS"
+        mapStyle={`https://api.maptiler.com/maps/25f8f6d1-4c43-47ad-826a-14b40a83286f/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_TO}`}
         attributionControl={false}
       >
         {/* <AttributionControl
