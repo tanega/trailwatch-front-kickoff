@@ -31,23 +31,8 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <>
-      <html lang="fr" suppressHydrationWarning>
-        <head />
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <main className="flex relative flex-col min-h-screen">
-              <Sidebar />
-              <div className="flex-1">{children}</div>
-            </main>
-          </ThemeProvider>
-        </body>
-      </html>
-    </>
+    <section className="relative flex h-screen w-full flex-row">
+      {children}
+    </section>
   )
 }
