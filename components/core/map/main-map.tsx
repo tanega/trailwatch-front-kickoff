@@ -36,7 +36,7 @@ type ExamplePropertiesType = {
 
 const vesselTrailsLayer = new GeoJsonLayer<PropertiesType>({
   id: "GeoJsonLayer2",
-  data: `${process.env.NEXT_PUBLIC_DOMAIN}/geometries/vessels_segments.geo.json`,
+  data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/geometries/vessels_segments.geo.json`,
   // data: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart.geo.json",
   getFillColor: [160, 160, 180, 200],
   getLineColor: [135, 24, 245, 200],
@@ -70,7 +70,7 @@ export default function CoreMap() {
       onViewStateChange={(e) => setViewState(e.viewState as MapViewState)}
     >
       <Map
-        mapStyle={`https://api.maptiler.com/maps/25f8f6d1-4c43-47ad-826a-14b40a83286f/style.json?key=${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_MAPTILER_TO}`}
+        mapStyle={`https://api.maptiler.com/maps/25f8f6d1-4c43-47ad-826a-14b40a83286f/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_TO}`}
         attributionControl={false}
       >
         {/* <AttributionControl
