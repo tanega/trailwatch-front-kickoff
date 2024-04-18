@@ -70,7 +70,7 @@ export default function CoreMap() {
       onViewStateChange={(e) => setViewState(e.viewState as MapViewState)}
     >
       <Map
-        mapStyle={`https://api.maptiler.com/maps/25f8f6d1-4c43-47ad-826a-14b40a83286f/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_TO}`}
+        mapStyle={`https://api.maptiler.com/maps/25f8f6d1-4c43-47ad-826a-14b40a83286f/style.json?key=${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_MAPTILER_TO}`}
         attributionControl={false}
       >
         {/* <AttributionControl
