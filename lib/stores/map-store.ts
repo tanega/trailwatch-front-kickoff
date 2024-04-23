@@ -1,5 +1,7 @@
-import { Deck, MapViewState } from "@deck.gl/core"
+import { MapViewState } from "@deck.gl/core"
 import { createStore } from "zustand/vanilla"
+
+import { VesselPosition } from "@/components/core/map/main-map"
 
 export interface ViewState {
   longitude: number
@@ -14,6 +16,8 @@ export interface ViewState {
 export type MapState = {
   count: number
   viewState: MapViewState
+  activePosition: VesselPosition | null
+  trackedVesselMMSIs: number[]
 }
 
 export type MapActions = {
@@ -21,6 +25,10 @@ export type MapActions = {
   incrementCount: () => void
   setViewState: (viewState: MapViewState) => void
   setZoom: (zoom: number) => void
+  setActivePosition: (activePosition: VesselPosition | null) => void
+  addTrackedVesselMMSI: (vesselMMSI: number) => void
+  removeTrackedVesselMMSI: (vesselMMSI: number) => void
+  clearTrackedVesselMMSIs: () => void
 }
 
 export type MapStore = MapState & MapActions
@@ -37,6 +45,8 @@ export const defaultInitState: MapState = {
     pitch: 0,
     bearing: 0,
   },
+  activePosition: null,
+  trackedVesselMMSIs: [],
 }
 
 export const createMapStore = (initState: MapState = defaultInitState) => {
@@ -54,6 +64,32 @@ export const createMapStore = (initState: MapState = defaultInitState) => {
       set((state) => ({
         ...state,
         viewState: { ...state.viewState, zoom },
+      }))
+    },
+    setActivePosition: (activePosition: VesselPosition | null) => {
+      set((state) => ({
+        ...state,
+        activePosition,
+      }))
+    },
+    addTrackedVesselMMSI: (vesselMMSI: number) => {
+      set((state) => ({
+        ...state,
+        trackedVesselMMSIs: [...state.trackedVesselMMSIs, vesselMMSI],
+      }))
+    },
+    removeTrackedVesselMMSI: (vesselMMSI: number) => {
+      set((state) => ({
+        ...state,
+        trackedVesselMMSIs: state.trackedVesselMMSIs.filter(
+          (mmsi) => mmsi !== vesselMMSI
+        ),
+      }))
+    },
+    clearTrackedVesselMMSIs: () => {
+      set((state) => ({
+        ...state,
+        trackedVesselMMSIs: [],
       }))
     },
   }))
