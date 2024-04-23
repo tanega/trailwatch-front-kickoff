@@ -3,18 +3,12 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import TrawlWatchLogo from "@/public/trawlwatch.svg"
-import {
-  ChartBarIcon,
-  ChartPieIcon,
-  DocumentCheckIcon,
-  MagnifyingGlassIcon,
-  Square2StackIcon,
-  UsersIcon,
-} from "@heroicons/react/24/outline"
-import { AnimatePresence, motion, useAnimationControls } from "framer-motion"
+import { ChartBarIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { motion, useAnimationControls } from "framer-motion"
 import { Ship as ShipIcon } from "lucide-react"
 
 import NavigationLink from "@/components/ui/navigation-link"
+import { VesselFinderDemo } from "@/components/core/command/vessel-finder"
 import { useMapStore } from "@/components/providers/map-store-provider"
 
 const containerVariants = {
@@ -47,8 +41,7 @@ const svgVariants = {
 
 const LeftPanel = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedProject, setSelectedProject] = useState<string | null>(null)
-
+  const { trackedVesselMMSIs } = useMapStore((state) => state)
   const containerControls = useAnimationControls()
   const svgControls = useAnimationControls()
 
@@ -64,7 +57,6 @@ const LeftPanel = () => {
 
   const handleOpenClose = () => {
     setIsOpen(!isOpen)
-    setSelectedProject(null)
   }
 
   return (
@@ -116,12 +108,14 @@ const LeftPanel = () => {
           </NavigationLink>
         </div>
         <div className="flex flex-col gap-3 bg-slate-800 p-5">
-          <NavigationLink href="#" name="Find vesssels" wide={isOpen}>
-            <MagnifyingGlassIcon className="w-8 min-w-8 stroke-inherit stroke-[0.75]" />
-          </NavigationLink>
+          <VesselFinderDemo />
         </div>
         <div className="flex flex-col gap-3 bg-slate-600 p-5">
-          <NavigationLink href="#" name="Selected vessel (0)" wide={isOpen}>
+          <NavigationLink
+            href="#"
+            name={`Selected vessel (${trackedVesselMMSIs.length})`}
+            wide={isOpen}
+          >
             <ShipIcon className="w-8 min-w-8 stroke-inherit stroke-[0.75]" />
           </NavigationLink>
         </div>
