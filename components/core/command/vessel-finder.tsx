@@ -1,16 +1,10 @@
 "use client"
 
-import * as React from "react"
-import {
-  Calculator,
-  Calendar,
-  CreditCard,
-  Settings,
-  ShipIcon,
-  Smile,
-  User,
-} from "lucide-react"
+import { useState } from "react"
+import allVessels from "@/public/data/geometries/all_vessels_with_mmsi.json"
+import { ShipIcon } from "lucide-react"
 
+import { Vessel } from "@/types/vessel"
 import {
   CommandDialog,
   CommandEmpty,
@@ -19,29 +13,35 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command"
+import { useMapStore } from "@/components/providers/map-store-provider"
 
-export function VesselFinderDemo() {
-  const [open, setOpen] = React.useState(false)
+type Props = {
+  wideMode: boolean
+}
 
-  React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
-      }
+const SEPARATOR = "___"
+
+export function VesselFinderDemo({ wideMode }: Props) {
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState<string>("")
+  const { addTrackedVesselMMSI, trackedVesselMMSIs } = useMapStore(
+    (state) => state
+  )
+
+  const onSelectVessel = (vesselIdentifier: string) => {
+    const mmsi = parseInt(vesselIdentifier.split(SEPARATOR)[1])
+    if (mmsi && !trackedVesselMMSIs.includes(mmsi)) {
+      addTrackedVesselMMSI(mmsi)
     }
-
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
-  }, [])
+    setOpen(false)
+  }
 
   return (
     <>
       <button
         type="button"
-        className="dark:highlight-white/5 hidden w-full items-center rounded-md bg-slate-800 py-1.5 pl-2 pr-3 text-sm leading-6 text-slate-400 shadow-sm ring-1 ring-slate-900/10 hover:bg-slate-700 hover:ring-slate-300 lg:flex"
+        className="dark:highlight-white/5 flex items-center rounded-md bg-color-3 py-1.5 pl-2 pr-3 text-sm leading-6 text-slate-400 shadow-sm ring-1 ring-color-2 hover:bg-slate-700 hover:ring-slate-300"
         onClick={() => setOpen(true)}
       >
         <svg
@@ -68,35 +68,34 @@ export function VesselFinderDemo() {
             strokeLinejoin="round"
           ></circle>
         </svg>
-        Find vessels...
-        <span className="ml-auto flex-none pl-3 text-xs font-semibold">⌘K</span>
+        {wideMode && <>Find vessels...</>}
       </button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type MMSI, IMO or vessel name to search..." />
+        <CommandInput
+          placeholder="Type MMSI, IMO or vessel name to search..."
+          value={search}
+          onValueChange={setSearch}
+        />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Vessels">
-            <CommandItem>
-              <ShipIcon className="mr-2 h-4 w-4" />
-              <span>Ship Name 1 | MMSI | IMO</span>
-            </CommandItem>
-            <CommandItem>
-              <ShipIcon className="mr-2 h-4 w-4" />
-              <span>Ship Name 2 | MMSI | IMO</span>
-            </CommandItem>
-            <CommandItem>
-              <ShipIcon className="mr-2 h-4 w-4" />
-              <span>Ship Name 3| MMSI | IMO</span>
-            </CommandItem>
-            <CommandItem>
-              <ShipIcon className="mr-2 h-4 w-4" />
-              <span>Ship Name 4| MMSI | IMO</span>
-            </CommandItem>
-            <CommandItem>
-              <ShipIcon className="mr-2 h-4 w-4" />
-              <span>Ship Name 4 | MMSI | IMO</span>
-            </CommandItem>
+            {allVessels.map((vessel: Vessel) => {
+              return (
+                <CommandItem
+                  key={`${vessel.imo}-${vessel.name}`}
+                  onSelect={(value) => onSelectVessel(value)}
+                  value={`${vessel.name}${SEPARATOR}${vessel.mmsi}${SEPARATOR}${vessel.imo}`} // so we can search by name, mmsi, imo
+                >
+                  <ShipIcon className="mr-2 size-4" />
+                  <span>{vessel.name}</span>
+                  <span className="ml-2 text-xxxs">
+                    {" "}
+                    MMSI {vessel.mmsi} | IMO {vessel.imo}
+                  </span>
+                </CommandItem>
+              )
+            })}
           </CommandGroup>
           <CommandSeparator />
         </CommandList>
