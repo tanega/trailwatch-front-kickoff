@@ -22,7 +22,7 @@ const PositionPreview: React.FC<PositionPreviewTypes> = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 300, opacity: 0 }}
           transition={{ type: "spring", stiffness: 66 }}
-          className="fixed bottom-0 left-1/2 ml-[-225px] w-auto -translate-x-1/2"
+          className="fixed bottom-0 right-0 mr-10 mb-2 w-auto -translate-x-1/2"
         >
           <PreviewCard vesselInfo={activePosition} />
         </motion.div>

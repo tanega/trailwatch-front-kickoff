@@ -71,7 +71,7 @@ type BartStation = {
 export default function CoreMap() {
   const { setTheme, theme } = useTheme()
 
-  const { viewState, setViewState, activePosition, setActivePosition } =
+  const { viewState, setViewState, activePosition, setActivePosition, trackedVesselMMSIs } =
     useMapStore((state) => state)
 
   // Use a piece of state that changes when `activePosition` changes to force re-render
@@ -80,7 +80,7 @@ export default function CoreMap() {
   useEffect(() => {
     // This will change the key of the layer, forcing it to re-render when `activePosition` changes
     setLayerKey((prevKey) => prevKey + 1)
-  }, [activePosition])
+  }, [activePosition, trackedVesselMMSIs])
 
   const latestPositions = new ScatterplotLayer<VesselPosition>({
     id: `vessels-latest-positions-${layerKey}`,
@@ -98,7 +98,7 @@ export default function CoreMap() {
     radiusMaxPixels: 25,
     radiusScale: 200,
     getFillColor: (d: VesselPosition) => {
-      return d.vessel_mmsi === activePosition?.vessel_mmsi
+      return d.vessel_mmsi === activePosition?.vessel_mmsi || trackedVesselMMSIs.includes(d.vessel_mmsi)
         ? [128, 16, 189, 210]
         : [16, 181, 16, 210]
     },
@@ -118,10 +118,10 @@ export default function CoreMap() {
     },
   })
 
-  const tracksByVesselAndVoyage =
-    new GeoJsonLayer<VesselVoyageTracksPropertiesType>({
+  const tracksByVesselAndVoyage = trackedVesselMMSIs.map(trackedVesselMMSI => {
+    return new GeoJsonLayer<VesselVoyageTracksPropertiesType>({
       id: "tracks_by_vessel_and_voyage",
-      data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/geometries/all_tracks_by_vessel_and_voyage.geo.json`,
+      data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/geometries/segments_by_vessel_mmsi/${trackedVesselMMSI}_segments.geo.json`,
       getFillColor: [160, 160, 180, 200],
       getLineColor: [135, 24, 245, 200],
       pickable: true,
@@ -135,6 +135,7 @@ export default function CoreMap() {
       getPointRadius: 4,
       getTextSize: 12,
     })
+  });
 
   const mesh_layer = new SimpleMeshLayer({
     id: "vessels-latest-positions-mesh",
@@ -149,7 +150,6 @@ export default function CoreMap() {
     // getColor: [255, 255, 255],
     // getOrientation: (d) => d.position_heading,
     data: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json",
-
     getColor: (d: BartStation) => [Math.sqrt(d.exits), 140, 0],
     getOrientation: (d: BartStation) => [0, Math.random() * 180, 0],
     getPosition: (d: BartStation) => d.coordinates,
