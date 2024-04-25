@@ -120,7 +120,7 @@ export default function CoreMap() {
 
   const tracksByVesselAndVoyage = trackedVesselMMSIs.map(trackedVesselMMSI => {
     return new GeoJsonLayer<VesselVoyageTracksPropertiesType>({
-      id: "tracks_by_vessel_and_voyage",
+      id: `tracks_by_vessel_and_voyage_${trackedVesselMMSI}`,
       data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/geometries/segments_by_vessel_mmsi/${trackedVesselMMSI}_segments.geo.json`,
       getFillColor: [160, 160, 180, 200],
       getLineColor: [135, 24, 245, 200],
