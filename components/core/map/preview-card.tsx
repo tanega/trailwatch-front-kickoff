@@ -64,7 +64,7 @@ const PreviewCard: React.FC<PreviewCardTypes> = ({ vesselInfo }) => {
             IMO {imo} / MMSI {mmsi}
           </p>
           <p className="mb-1 text-gray-700 dark:text-gray-400">
-            <span className="font-bold">Vessel type</span> Fishing Vessel
+            <span className="font-bold">Vessel type:</span> Fishing Vessel
           </p>
           <p className="mb-1 text-gray-700 dark:text-gray-400">
             <span className="font-bold">Vessel size:</span> {size} meters
@@ -78,19 +78,19 @@ const PreviewCard: React.FC<PreviewCardTypes> = ({ vesselInfo }) => {
         </section>
         <section id="vessel-actions">
           <Button onClick={() => handleDisplayTrail(mmsi)}>
-            {isVesselTracked(mmsi) ? "Hide" : "Display"} trail
+            {isVesselTracked(mmsi) ? "Hide" : "Display"} track
           </Button>
-          {isVesselTracked(mmsi) && <Link href="#" className="ml-2">Show trail details</Link>}
+          {isVesselTracked(mmsi) && <Link href="#" className="ml-2">Show track details</Link>}
         </section>
 
         <div className="absolute right-0 top-0 pt-4 pr-3">
-        <IconButton
+          <IconButton
             description="Close preview"
             onClick={() => setActivePosition(null)}
           >
             <XIcon className="size-5 text-black dark:text-white" />
           </IconButton>
-        </div> 
+        </div>
       </div>
     </div>
   )
