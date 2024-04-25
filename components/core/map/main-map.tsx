@@ -2,12 +2,14 @@
 
 import "maplibre-gl/dist/maplibre-gl.css"
 
+import * as fs from "fs/promises"
 import { useEffect, useState } from "react"
 import type { PickingInfo } from "@deck.gl/core"
 import { GeoJsonLayer } from "@deck.gl/layers"
 import { SimpleMeshLayer } from "@deck.gl/mesh-layers"
 import DeckGL from "@deck.gl/react"
 import { OBJLoader } from "@loaders.gl/obj"
+import chroma from "chroma-js"
 import { FlyToInterpolator, MapViewState, ScatterplotLayer } from "deck.gl"
 import { useTheme } from "next-themes"
 import { renderToString } from "react-dom/server"
@@ -18,8 +20,6 @@ import MapTooltip from "@/components/ui/tooltip-map-template"
 import { useMapStore } from "@/components/providers/map-store-provider"
 
 const MESH_URL_LOCAL = `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/mesh/boat.obj`
-const MESH_URL_REMOTE =
-  "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/humanoid_quad.obj"
 
 export type VesselVoyageTracksPropertiesType = {
   vessel_ais_class: string
@@ -35,6 +35,13 @@ export type VesselVoyageTracksPropertiesType = {
   voyage_destination?: string
   voyage_draught?: number
   voyage_eta: string
+}
+
+export type VesselTrailPropertiesType = {
+  vessel_mmsi: number
+  speed: number
+  heading?: number
+  navigational_status: string
 }
 
 export type VesselPositions = VesselPosition[]
@@ -71,11 +78,22 @@ type BartStation = {
 export default function CoreMap() {
   const { setTheme, theme } = useTheme()
 
-  const { viewState, setViewState, activePosition, setActivePosition, trackedVesselMMSIs } =
-    useMapStore((state) => state)
+  const {
+    viewState,
+    setViewState,
+    activePosition,
+    setActivePosition,
+    trackedVesselMMSIs,
+  } = useMapStore((state) => state)
 
   // Use a piece of state that changes when `activePosition` changes to force re-render
   const [layerKey, setLayerKey] = useState(0)
+
+  function getColorFromValue(value: number): [number, number, number] {
+    const scale = chroma.scale(["yellow", "red", "black"]).domain([0, 15])
+    const color = scale(value).rgb()
+    return [Math.round(color[0]), Math.round(color[1]), Math.round(color[2])]
+  }
 
   useEffect(() => {
     // This will change the key of the layer, forcing it to re-render when `activePosition` changes
@@ -84,7 +102,7 @@ export default function CoreMap() {
 
   const latestPositions = new ScatterplotLayer<VesselPosition>({
     id: `vessels-latest-positions-${layerKey}`,
-    data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/geometries/vessels_latest_positions.json`,
+    data: `../../../data/geometries/vessels_latest_positions.json`,
     getPosition: (d: VesselPosition) => [
       d.position_longitude,
       d.position_latitude,
@@ -98,7 +116,8 @@ export default function CoreMap() {
     radiusMaxPixels: 25,
     radiusScale: 200,
     getFillColor: (d: VesselPosition) => {
-      return d.vessel_mmsi === activePosition?.vessel_mmsi || trackedVesselMMSIs.includes(d.vessel_mmsi)
+      return d.vessel_mmsi === activePosition?.vessel_mmsi ||
+        trackedVesselMMSIs.includes(d.vessel_mmsi)
         ? [128, 16, 189, 210]
         : [16, 181, 16, 210]
     },
@@ -112,54 +131,84 @@ export default function CoreMap() {
         longitude: object.position_longitude,
         latitude: object.position_latitude,
         zoom: 7,
+        pitch: 40,
         transitionInterpolator: new FlyToInterpolator({ speed: 2 }),
         transitionDuration: "auto",
       })
     },
   })
 
-  const tracksByVesselAndVoyage = trackedVesselMMSIs.map(trackedVesselMMSI => {
-    return new GeoJsonLayer<VesselVoyageTracksPropertiesType>({
-      id: "tracks_by_vessel_and_voyage",
-      data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/geometries/segments_by_vessel_mmsi/${trackedVesselMMSI}_segments.geo.json`,
-      getFillColor: [160, 160, 180, 200],
-      getLineColor: [135, 24, 245, 200],
-      pickable: true,
-      stroked: false,
-      filled: true,
-      getLineWidth: 1,
-      lineWidthMinPixels: 0.5,
-      lineWidthMaxPixels: 3,
-      lineWidthUnits: "pixels",
-      lineWidthScale: 2,
-      getPointRadius: 4,
-      getTextSize: 12,
-    })
-  });
+  const tracksByVesselAndVoyage = trackedVesselMMSIs.map(
+    (trackedVesselMMSI) => {
+      return new GeoJsonLayer<VesselTrailPropertiesType>({
+        id: `${trackedVesselMMSI}_vessel_trail_${layerKey}`,
+        // data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/geometries/segments_by_vessel_mmsi/${trackedVesselMMSI}_segments.geo.json`,
+        data: `../../../data/geometries/segments_by_vessel_mmsi/${trackedVesselMMSI}_segments.geo.json`,
+        getFillColor: ({ properties }) => getColorFromValue(properties.speed),
+        // getLineColor: [135, 24, 245, 200],
+        getLineColor: ({ properties }) => {
+          return getColorFromValue(properties.speed)
+        },
+        pickable: false,
+        stroked: false,
+        filled: true,
+        getLineWidth: 1,
+        lineWidthMinPixels: 0.5,
+        lineWidthMaxPixels: 3,
+        lineWidthUnits: "pixels",
+        lineWidthScale: 2,
+        getPointRadius: 4,
+        getTextSize: 12,
+      })
+    }
+  )
 
-  const mesh_layer = new SimpleMeshLayer({
-    id: "vessels-latest-positions-mesh",
-    // data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/geometries/latest_positions.json`,
+  const positions_mesh_layer = new SimpleMeshLayer({
+    id: `vessels-positions-mesh-layer-${layerKey}`,
+    data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/geometries/vessels_latest_positions.json`,
     mesh: MESH_URL_LOCAL,
-    // getPosition:  (d: Vessel) => [d.lng, d.lat, d.alt],
-    // getPosition: (d) => [
-    //   d.position_longitude ? d.position_longitude : 0,
-    //   d.position_latitude ? d.position_latitude : 0,
-    //   0,
-    // ],
-    // getColor: [255, 255, 255],
-    // getOrientation: (d) => d.position_heading,
-    data: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json",
-    getColor: (d: BartStation) => [Math.sqrt(d.exits), 140, 0],
-    getOrientation: (d: BartStation) => [0, Math.random() * 180, 0],
-    getPosition: (d: BartStation) => d.coordinates,
-    // mesh: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/humanoid_quad.obj",
-    sizeScale: 30,
+    getPosition: (d: VesselPosition) => [
+      d.position_longitude,
+      d.position_latitude,
+    ],
+    getColor: (d: VesselPosition) => {
+      return d.vessel_mmsi === activePosition?.vessel_mmsi ||
+        trackedVesselMMSIs.includes(d.vessel_mmsi)
+        ? [128, 16, 189, 210]
+        : [16, 181, 16, 210]
+    },
+    getOrientation: (d: VesselPosition) => [
+      0,
+      Math.round(d.position_heading ? d.position_heading : 0),
+      90,
+    ],
+    getScale: (d: VesselPosition) => [
+      d.vessel_length,
+      d.vessel_length * 1.5,
+      d.vessel_length / 1.5,
+    ],
+    scaleUnits: "pixels",
+    sizeScale: 100,
     pickable: true,
+    onClick: ({ object }) => {
+      setActivePosition(object as VesselPosition)
+      setViewState({
+        ...viewState,
+        longitude: object.position_longitude,
+        latitude: object.position_latitude,
+        zoom: 10,
+        transitionInterpolator: new FlyToInterpolator({ speed: 2 }),
+        transitionDuration: "auto",
+      })
+    },
     loaders: [OBJLoader],
   })
 
-  const layers = [tracksByVesselAndVoyage, mesh_layer, latestPositions]
+  const layers = [
+    tracksByVesselAndVoyage,
+    latestPositions,
+    positions_mesh_layer,
+  ]
 
   useEffect(() => {
     setTheme("light")
@@ -190,18 +239,7 @@ export default function CoreMap() {
       <Map
         mapStyle={`https://api.maptiler.com/maps/bb513c96-848e-4775-b150-437395193f26/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_TO}`}
         attributionControl={false}
-      >
-        {/* <AttributionControl
-          style={{
-            position: "fixed",
-            bottom: "100%",
-            width: "100%",
-            zIndex: 20,
-            color: "black",
-          }}
-          position="bottom-right"
-        /> */}
-      </Map>
+      ></Map>
     </DeckGL>
   )
 }

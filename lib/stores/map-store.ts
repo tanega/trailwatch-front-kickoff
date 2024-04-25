@@ -42,7 +42,7 @@ export const defaultInitState: MapState = {
     // longitude: -122.4,
     // latitude: 37.74,
     // zoom: 11,
-    pitch: 0,
+    pitch: 20,
     bearing: 0,
   },
   activePosition: null,

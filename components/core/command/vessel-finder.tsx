@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import allVessels from "@/public/data/geometries/all_vessels_with_mmsi.json"
+import latestPositions from "@/public/data/geometries/vessels_latest_positions.json"
+import { FlyToInterpolator } from "deck.gl"
 import { ShipIcon } from "lucide-react"
 
 import { Vessel } from "@/types/vessel"
@@ -16,6 +18,8 @@ import {
 } from "@/components/ui/command"
 import { useMapStore } from "@/components/providers/map-store-provider"
 
+import { VesselPosition } from "../map/main-map"
+
 type Props = {
   wideMode: boolean
 }
@@ -25,14 +29,35 @@ const SEPARATOR = "___"
 export function VesselFinderDemo({ wideMode }: Props) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState<string>("")
-  const { addTrackedVesselMMSI, trackedVesselMMSIs } = useMapStore(
-    (state) => state
-  )
+  const {
+    addTrackedVesselMMSI,
+    trackedVesselMMSIs,
+    setActivePosition,
+    viewState,
+    setViewState,
+  } = useMapStore((state) => state)
 
   const onSelectVessel = (vesselIdentifier: string) => {
     const mmsi = parseInt(vesselIdentifier.split(SEPARATOR)[1])
     if (mmsi && !trackedVesselMMSIs.includes(mmsi)) {
       addTrackedVesselMMSI(mmsi)
+    }
+    if (mmsi) {
+      const selectedVesselLatestPosition = latestPositions.find(
+        (position) => position.vessel_mmsi === mmsi
+      )
+      if (selectedVesselLatestPosition) {
+        setActivePosition(selectedVesselLatestPosition as VesselPosition)
+        setViewState({
+          ...viewState,
+          longitude: selectedVesselLatestPosition.position_longitude,
+          latitude: selectedVesselLatestPosition.position_latitude,
+          zoom: 7,
+          pitch: 40,
+          transitionInterpolator: new FlyToInterpolator({ speed: 2 }),
+          transitionDuration: "auto",
+        })
+      }
     }
     setOpen(false)
   }
