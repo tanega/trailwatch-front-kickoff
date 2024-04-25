@@ -2,7 +2,6 @@
 
 import "maplibre-gl/dist/maplibre-gl.css"
 
-import * as fs from "fs/promises"
 import { useEffect, useState } from "react"
 import type { PickingInfo } from "@deck.gl/core"
 import { GeoJsonLayer } from "@deck.gl/layers"
@@ -13,13 +12,12 @@ import chroma from "chroma-js"
 import { FlyToInterpolator, MapViewState, ScatterplotLayer } from "deck.gl"
 import { useTheme } from "next-themes"
 import { renderToString } from "react-dom/server"
-import Map, { AttributionControl, Popup } from "react-map-gl/maplibre"
+import Map from "react-map-gl/maplibre"
 
-import NavigationLink from "@/components/ui/navigation-link"
 import MapTooltip from "@/components/ui/tooltip-map-template"
 import { useMapStore } from "@/components/providers/map-store-provider"
 
-const MESH_URL_LOCAL = `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/mesh/boat.obj`
+const MESH_URL_LOCAL = `../../../data/mesh/boat.obj`
 
 export type VesselVoyageTracksPropertiesType = {
   vessel_ais_class: string
@@ -107,8 +105,6 @@ export default function CoreMap() {
       d.position_longitude,
       d.position_latitude,
     ],
-    // data: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json",
-    // getPosition: (d: BartStation) => d.coordinates,
     stroked: true,
     radiusUnits: "meters",
     getRadius: (d: VesselPosition) => d.vessel_length,
@@ -142,10 +138,8 @@ export default function CoreMap() {
     (trackedVesselMMSI) => {
       return new GeoJsonLayer<VesselTrailPropertiesType>({
         id: `${trackedVesselMMSI}_vessel_trail_${layerKey}`,
-        // data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/geometries/segments_by_vessel_mmsi/${trackedVesselMMSI}_segments.geo.json`,
         data: `../../../data/geometries/segments_by_vessel_mmsi/${trackedVesselMMSI}_segments.geo.json`,
         getFillColor: ({ properties }) => getColorFromValue(properties.speed),
-        // getLineColor: [135, 24, 245, 200],
         getLineColor: ({ properties }) => {
           return getColorFromValue(properties.speed)
         },
@@ -223,7 +217,6 @@ export default function CoreMap() {
       getTooltip={({ object }: PickingInfo<VesselPosition>) =>
         object
           ? {
-              // html: `<h2 class="text-3xl">Message:</h2> <div>${object.vessel_name}</div>`,
               html: renderToString(<MapTooltip vesselInfo={object} />),
               style: {
                 backgroundColor: "#fff",
