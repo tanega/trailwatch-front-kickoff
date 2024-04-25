@@ -165,7 +165,7 @@ export default function CoreMap() {
 
   const positions_mesh_layer = new SimpleMeshLayer({
     id: `vessels-positions-mesh-layer-${layerKey}`,
-    data: `${process.env.NEXT_PUBLIC_VERCEL_URL ? process.env.NEXT_PUBLIC_VERCEL_URL : process.env.NEXT_PUBLIC_DOMAIN}/data/geometries/vessels_latest_positions.json`,
+    data: `../../../data/geometries/vessels_latest_positions.json`,
     mesh: MESH_URL_LOCAL,
     getPosition: (d: VesselPosition) => [
       d.position_longitude,
