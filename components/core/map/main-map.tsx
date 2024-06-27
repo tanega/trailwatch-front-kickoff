@@ -9,7 +9,12 @@ import { SimpleMeshLayer } from "@deck.gl/mesh-layers"
 import DeckGL from "@deck.gl/react"
 import { OBJLoader } from "@loaders.gl/obj"
 import chroma from "chroma-js"
-import { FlyToInterpolator, MapViewState, ScatterplotLayer } from "deck.gl"
+import {
+  FlyToInterpolator,
+  MapViewState,
+  MVTLayer,
+  ScatterplotLayer,
+} from "deck.gl"
 import { useTheme } from "next-themes"
 import { renderToString } from "react-dom/server"
 import Map from "react-map-gl/maplibre"
@@ -66,6 +71,36 @@ export interface VesselPosition {
   voyage_draught?: number
 }
 
+export interface AMPLayerPropertiesType {
+  mpa_id: number
+  mpa_pid: number
+  gid?: number
+  mpa_name: string
+  mpa_orinam: string
+  des_id: number
+  des_desigf: string
+  des_desigt: string
+  mpa_status: string
+  mpa_datebe: string
+  mpa_statu0: number
+  mpa_wdpaid: number
+  mpa_wdpapi: string
+  mpa_mnhnid?: string
+  mpa_marine: number
+  mpa_calcar: number
+  mpa_calcma?: number
+  mpa_repare?: number
+  mpa_repmar?: number
+  mpa_url?: string
+  mpa_update: string
+  iucn_idiuc?: string
+  subloc_cod?: string
+  subloc_nam?: string
+  country_pi?: string
+  country_is?: string
+  country_i0?: string
+}
+
 type BartStation = {
   name: string
   entries: number
@@ -108,14 +143,14 @@ export default function CoreMap() {
     stroked: true,
     radiusUnits: "meters",
     getRadius: (d: VesselPosition) => d.vessel_length,
-    radiusMinPixels: 3,
-    radiusMaxPixels: 25,
+    radiusMinPixels: 4,
+    radiusMaxPixels: 35,
     radiusScale: 200,
     getFillColor: (d: VesselPosition) => {
       return d.vessel_mmsi === activePosition?.vessel_mmsi ||
         trackedVesselMMSIs.includes(d.vessel_mmsi)
-        ? [128, 16, 189, 210]
-        : [16, 181, 16, 210]
+        ? [227, 117, 73, 210]
+        : [31, 224, 171, 210]
     },
     getLineColor: [0, 0, 0],
     getLineWidth: 3,
@@ -168,8 +203,8 @@ export default function CoreMap() {
     getColor: (d: VesselPosition) => {
       return d.vessel_mmsi === activePosition?.vessel_mmsi ||
         trackedVesselMMSIs.includes(d.vessel_mmsi)
-        ? [128, 16, 189, 210]
-        : [16, 181, 16, 210]
+        ? [227, 117, 73, 210]
+        : [31, 224, 171, 210]
     },
     getOrientation: (d: VesselPosition) => [
       0,
@@ -198,7 +233,26 @@ export default function CoreMap() {
     loaders: [OBJLoader],
   })
 
+  const ampLayer = new MVTLayer<AMPLayerPropertiesType>({
+    id: "MVTLayer",
+    data: ["http://localhost:8081/data/amp_tileset/{z}/{x}/{y}.pbf"],
+    minZoom: 0,
+    maxZoom: 14,
+    stroked: true,
+    extruded: false,
+    filled: true,
+    pickable: true,
+    getFillColor: [0, 0, 0, 40],
+    getLineWidth: 1,
+    lineWidthMaxPixels: 2,
+    lineWidthMinPixels: 1,
+    lineWidthScale: 2,
+    lineWidthUnits: "pixels",
+    wireframe: true,
+    getLineColor: [23, 40, 103, 255],
+  })
   const layers = [
+    ampLayer,
     tracksByVesselAndVoyage,
     latestPositions,
     positions_mesh_layer,
