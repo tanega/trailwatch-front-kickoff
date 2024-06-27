@@ -1,7 +1,6 @@
+import { VesselPosition } from "@/types/vessel"
 import { MapViewState } from "@deck.gl/core"
 import { createStore } from "zustand/vanilla"
-
-import { VesselPosition } from "@/components/core/map/main-map"
 
 export interface ViewState {
   longitude: number
@@ -16,6 +15,7 @@ export interface ViewState {
 export type MapState = {
   count: number
   viewState: MapViewState
+  latestPositions: VesselPosition[]
   activePosition: VesselPosition | null
   trackedVesselMMSIs: number[]
 }
@@ -25,9 +25,11 @@ export type MapActions = {
   incrementCount: () => void
   setViewState: (viewState: MapViewState) => void
   setZoom: (zoom: number) => void
+  setLatestPositions: (latestPositions: VesselPosition[]) => void
   setActivePosition: (activePosition: VesselPosition | null) => void
   addTrackedVesselMMSI: (vesselMMSI: number) => void
   removeTrackedVesselMMSI: (vesselMMSI: number) => void
+  clearLatestPositions: () => void
   clearTrackedVesselMMSIs: () => void
 }
 
@@ -45,6 +47,7 @@ export const defaultInitState: MapState = {
     pitch: 20,
     bearing: 0,
   },
+  latestPositions: [],
   activePosition: null,
   trackedVesselMMSIs: [],
 }
@@ -66,6 +69,12 @@ export const createMapStore = (initState: MapState = defaultInitState) => {
         viewState: { ...state.viewState, zoom },
       }))
     },
+    setLatestPositions: (latestPositions: VesselPosition[]) => {
+      set((state) => ({
+        ...state,
+        latestPositions,
+      }))
+    },
     setActivePosition: (activePosition: VesselPosition | null) => {
       set((state) => ({
         ...state,
@@ -84,6 +93,12 @@ export const createMapStore = (initState: MapState = defaultInitState) => {
         trackedVesselMMSIs: state.trackedVesselMMSIs.filter(
           (mmsi) => mmsi !== vesselMMSI
         ),
+      }))
+    },
+    clearLatestPositions: () => {
+      set((state) => ({
+        ...state,
+        latestPositions: [],
       }))
     },
     clearTrackedVesselMMSIs: () => {
