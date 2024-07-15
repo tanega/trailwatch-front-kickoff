@@ -39,7 +39,7 @@ export default function CoreMap({ vesselsPositions }: CoreMapProps) {
     setViewState,
     activePosition,
     setActivePosition,
-    trackedVesselMMSIs,
+    trackedVesselIDs,
     setLatestPositions,
   } = useMapStore((state) => state)
 
@@ -55,7 +55,7 @@ export default function CoreMap({ vesselsPositions }: CoreMapProps) {
   useEffect(() => {
     // This will change the key of the layer, forcing it to re-render when `activePosition` changes
     setLayerKey((prevKey) => prevKey + 1)
-  }, [activePosition, trackedVesselMMSIs])
+  }, [activePosition, trackedVesselIDs])
 
   useEffect(() => {
     setLatestPositions(vesselsPositions);
@@ -75,8 +75,8 @@ export default function CoreMap({ vesselsPositions }: CoreMapProps) {
     radiusMaxPixels: 25,
     radiusScale: 200,
     getFillColor: (vp: VesselPosition) => {
-      return vp.vessel.mmsi === activePosition?.vessel.mmsi ||
-        trackedVesselMMSIs.includes(vp.vessel.mmsi)
+      return vp.vessel.mmsi === activePosition?.vessel.id ||
+        trackedVesselIDs.includes(vp.vessel.id)
         ? [128, 16, 189, 210]
         : [16, 181, 16, 210]
     },
@@ -98,7 +98,7 @@ export default function CoreMap({ vesselsPositions }: CoreMapProps) {
   })
 
   // TODO(CT): call backend
-  const tracksByVesselAndVoyage = trackedVesselMMSIs.map(
+  const tracksByVesselAndVoyage = trackedVesselIDs.map(
     (trackedVesselMMSI) => {
       return new GeoJsonLayer<VesselTrailPropertiesType>({
         id: `${trackedVesselMMSI}_vessel_trail_${layerKey}`,
@@ -130,8 +130,8 @@ export default function CoreMap({ vesselsPositions }: CoreMapProps) {
       vp?.position?.coordinates[1],
     ],
     getColor: (vp: VesselPosition) => {
-      return vp.vessel.mmsi === activePosition?.vessel.mmsi ||
-        trackedVesselMMSIs.includes(vp.vessel.mmsi)
+      return vp.vessel.mmsi === activePosition?.vessel.id ||
+        trackedVesselIDs.includes(vp.vessel.id)
         ? [128, 16, 189, 210]
         : [16, 181, 16, 210]
     },

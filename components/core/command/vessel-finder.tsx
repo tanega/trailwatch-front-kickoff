@@ -26,8 +26,8 @@ export function VesselFinderDemo({ wideMode }: Props) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState<string>("")
   const {
-    addTrackedVesselMMSI,
-    trackedVesselMMSIs,
+    addTrackedVesselID,
+    trackedVesselIDs,
     setActivePosition,
     viewState,
     setViewState,
@@ -36,13 +36,13 @@ export function VesselFinderDemo({ wideMode }: Props) {
   const { latestPositions } = useMapStore((state) => state);
 
   const onSelectVessel = (vesselIdentifier: string) => {
-    const mmsi = parseInt(vesselIdentifier.split(SEPARATOR)[1])
-    if (mmsi && !trackedVesselMMSIs.includes(mmsi)) {
-      addTrackedVesselMMSI(mmsi)
+    const vesselId = parseInt(vesselIdentifier.split(SEPARATOR)[3])
+    if (vesselId && !trackedVesselIDs.includes(vesselId)) {
+      addTrackedVesselID(vesselId)
     }
-    if (mmsi) {
+    if (vesselId) {
       const selectedVesselLatestPosition = latestPositions.find(
-        (position) => position.vessel.mmsi === mmsi
+        (position) => position.vessel.id === vesselId
       )
       if (selectedVesselLatestPosition) {
         setActivePosition(selectedVesselLatestPosition as VesselPosition)
@@ -108,7 +108,7 @@ export function VesselFinderDemo({ wideMode }: Props) {
                 <CommandItem
                   key={`${vessel.id}`}
                   onSelect={(value) => onSelectVessel(value)}
-                  value={`${vessel.ship_name}${SEPARATOR}${vessel.mmsi}${SEPARATOR}${vessel.imo}`} // so we can search by name, mmsi, imo
+                  value={`${vessel.ship_name}${SEPARATOR}${vessel.mmsi}${SEPARATOR}${vessel.imo}${SEPARATOR}${vessel.id}`} // so we can search by name, mmsi, imo
                 >
                   <span>{vessel.ship_name}</span>
                   <span className="ml-2 text-xxxs">

@@ -14,24 +14,19 @@ export interface PreviewCardTypes {
 const PreviewCard: React.FC<PreviewCardTypes> = ({ vesselInfo }) => {
   const {
     setActivePosition,
-    addTrackedVesselMMSI,
-    trackedVesselMMSIs,
-    removeTrackedVesselMMSI,
+    addTrackedVesselID,
+    trackedVesselIDs,
+    removeTrackedVesselID,
   } = useMapStore((state) => state)
-  const { vessel: { id, mmsi, ship_name, imo, length }, timestamp } = vesselInfo
-  const isVesselTracked = (mmsi: number) => {
-    return trackedVesselMMSIs.includes(mmsi)
+  const { vessel: { id: vesselId, mmsi, ship_name, imo, length }, timestamp } = vesselInfo
+  const isVesselTracked = (vesselId: number) => {
+    return trackedVesselIDs.includes(vesselId)
   }
-  console.log(id)
 
-  // useEffect(() => {
-  //   console.log("trackedVesselMMSIs", trackedVesselMMSIs)
-  // }, [trackedVesselMMSIs])
-
-  const handleDisplayTrail = (vessel_mmsi: number) => {
-    isVesselTracked(vessel_mmsi)
-      ? removeTrackedVesselMMSI(vessel_mmsi)
-      : addTrackedVesselMMSI(vessel_mmsi)
+  const handleDisplayTrail = (vesselId: number) => {
+    isVesselTracked(vesselId)
+      ? removeTrackedVesselID(vesselId)
+      : addTrackedVesselID(vesselId)
   }
   return (
     <div className="flex w-wrap flex-col rounded-t-lg bg-white shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 md:max-w-xl md:flex-row">
@@ -71,10 +66,10 @@ const PreviewCard: React.FC<PreviewCardTypes> = ({ vesselInfo }) => {
           </p>
         </section>
         <section id="vessel-actions">
-          <Button onClick={() => handleDisplayTrail(mmsi)}>
-            {isVesselTracked(mmsi) ? "Hide" : "Display"} track
+          <Button onClick={() => handleDisplayTrail(vesselId)}>
+            {isVesselTracked(vesselId) ? "Hide" : "Display"} track
           </Button>
-          {isVesselTracked(mmsi) && <Link href="#" className="ml-2">Show track details</Link>}
+          {isVesselTracked(vesselId) && <Link href="#" className="ml-2">Show track details</Link>}
         </section>
 
         <div className="absolute right-0 top-0 pt-4 pr-3">

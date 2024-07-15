@@ -17,7 +17,7 @@ export type MapState = {
   viewState: MapViewState
   latestPositions: VesselPosition[]
   activePosition: VesselPosition | null
-  trackedVesselMMSIs: number[]
+  trackedVesselIDs: number[]
 }
 
 export type MapActions = {
@@ -27,10 +27,10 @@ export type MapActions = {
   setZoom: (zoom: number) => void
   setLatestPositions: (latestPositions: VesselPosition[]) => void
   setActivePosition: (activePosition: VesselPosition | null) => void
-  addTrackedVesselMMSI: (vesselMMSI: number) => void
-  removeTrackedVesselMMSI: (vesselMMSI: number) => void
+  addTrackedVesselID: (vesselID: number) => void
+  removeTrackedVesselID: (vesselID: number) => void
   clearLatestPositions: () => void
-  clearTrackedVesselMMSIs: () => void
+  cleartrackedVesselIDs: () => void
 }
 
 export type MapStore = MapState & MapActions
@@ -49,7 +49,7 @@ export const defaultInitState: MapState = {
   },
   latestPositions: [],
   activePosition: null,
-  trackedVesselMMSIs: [],
+  trackedVesselIDs: [],
 }
 
 export const createMapStore = (initState: MapState = defaultInitState) => {
@@ -81,17 +81,17 @@ export const createMapStore = (initState: MapState = defaultInitState) => {
         activePosition,
       }))
     },
-    addTrackedVesselMMSI: (vesselMMSI: number) => {
+    addTrackedVesselID: (vesselID: number) => {
       set((state) => ({
         ...state,
-        trackedVesselMMSIs: [...state.trackedVesselMMSIs, vesselMMSI],
+        trackedVesselIDs: [...state.trackedVesselIDs, vesselID],
       }))
     },
-    removeTrackedVesselMMSI: (vesselMMSI: number) => {
+    removeTrackedVesselID: (vesselID: number) => {
       set((state) => ({
         ...state,
-        trackedVesselMMSIs: state.trackedVesselMMSIs.filter(
-          (mmsi) => mmsi !== vesselMMSI
+        trackedVesselIDs: state.trackedVesselIDs.filter(
+          (id) => id !== vesselID
         ),
       }))
     },
@@ -101,10 +101,10 @@ export const createMapStore = (initState: MapState = defaultInitState) => {
         latestPositions: [],
       }))
     },
-    clearTrackedVesselMMSIs: () => {
+    cleartrackedVesselIDs: () => {
       set((state) => ({
         ...state,
-        trackedVesselMMSIs: [],
+        trackedVesselIDs: [],
       }))
     },
   }))
