@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import IconButton from "@/components/ui/icon-button"
 import { useMapStore } from "@/components/providers/map-store-provider"
 import { VesselPosition } from "@/types/vessel"
+import { getVesselFirstExcursionSegments } from "@/services/backend-rest-client"
 
 export interface PreviewCardTypes {
   vesselInfo: VesselPosition
@@ -14,19 +15,22 @@ export interface PreviewCardTypes {
 const PreviewCard: React.FC<PreviewCardTypes> = ({ vesselInfo }) => {
   const {
     setActivePosition,
-    addTrackedVesselID,
+    addTrackedVessel,
     trackedVesselIDs,
-    removeTrackedVesselID,
+    removeTrackedVessel,
   } = useMapStore((state) => state)
   const { vessel: { id: vesselId, mmsi, ship_name, imo, length }, timestamp } = vesselInfo
   const isVesselTracked = (vesselId: number) => {
     return trackedVesselIDs.includes(vesselId)
   }
 
-  const handleDisplayTrail = (vesselId: number) => {
-    isVesselTracked(vesselId)
-      ? removeTrackedVesselID(vesselId)
-      : addTrackedVesselID(vesselId)
+  const handleDisplayTrail = async (vesselId: number) => {
+    if (isVesselTracked(vesselId)) {
+      removeTrackedVessel(vesselId);
+      return;
+    }
+    const response = await getVesselFirstExcursionSegments(vesselId);
+    addTrackedVessel(vesselId, response.data);
   }
   return (
     <div className="flex w-wrap flex-col rounded-t-lg bg-white shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 md:max-w-xl md:flex-row">

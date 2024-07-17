@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/command"
 import { useMapStore } from "@/components/providers/map-store-provider"
 import { useVesselsStore } from "@/components/providers/vessels-store-provider"
+import { getVesselFirstExcursionSegments } from "@/services/backend-rest-client"
 
 type Props = {
   wideMode: boolean
@@ -26,7 +27,7 @@ export function VesselFinderDemo({ wideMode }: Props) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState<string>("")
   const {
-    addTrackedVesselID,
+    addTrackedVessel,
     trackedVesselIDs,
     setActivePosition,
     viewState,
@@ -35,10 +36,11 @@ export function VesselFinderDemo({ wideMode }: Props) {
   const { vessels: allVessels } = useVesselsStore((state) => state);
   const { latestPositions } = useMapStore((state) => state);
 
-  const onSelectVessel = (vesselIdentifier: string) => {
+  const onSelectVessel = async (vesselIdentifier: string) => {
     const vesselId = parseInt(vesselIdentifier.split(SEPARATOR)[3])
+    const response = await getVesselFirstExcursionSegments(vesselId);
     if (vesselId && !trackedVesselIDs.includes(vesselId)) {
-      addTrackedVesselID(vesselId)
+      addTrackedVessel(vesselId, response.data);
     }
     if (vesselId) {
       const selectedVesselLatestPosition = latestPositions.find(
