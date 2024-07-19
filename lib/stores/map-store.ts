@@ -1,4 +1,4 @@
-import { VesselPosition } from "@/types/vessel"
+import { VesselExcursionSegment, VesselExcursionSegments, VesselExcursionSegmentsGeo, VesselPosition } from "@/types/vessel"
 import { MapViewState } from "@deck.gl/core"
 import { createStore } from "zustand/vanilla"
 
@@ -17,7 +17,8 @@ export type MapState = {
   viewState: MapViewState
   latestPositions: VesselPosition[]
   activePosition: VesselPosition | null
-  trackedVesselMMSIs: number[]
+  trackedVesselIDs: number[]
+  trackedVesselSegments: VesselExcursionSegments[]
 }
 
 export type MapActions = {
@@ -27,10 +28,10 @@ export type MapActions = {
   setZoom: (zoom: number) => void
   setLatestPositions: (latestPositions: VesselPosition[]) => void
   setActivePosition: (activePosition: VesselPosition | null) => void
-  addTrackedVesselMMSI: (vesselMMSI: number) => void
-  removeTrackedVesselMMSI: (vesselMMSI: number) => void
+  addTrackedVessel: (vesselID: number, segments: VesselExcursionSegment[]) => void
+  removeTrackedVessel: (vesselID: number) => void
   clearLatestPositions: () => void
-  clearTrackedVesselMMSIs: () => void
+  cleartrackedVessels: () => void
 }
 
 export type MapStore = MapState & MapActions
@@ -41,15 +42,13 @@ export const defaultInitState: MapState = {
     longitude: 3.788086,
     latitude: 47.840291,
     zoom: 5,
-    // longitude: -122.4,
-    // latitude: 37.74,
-    // zoom: 11,
     pitch: 20,
     bearing: 0,
   },
   latestPositions: [],
   activePosition: null,
-  trackedVesselMMSIs: [],
+  trackedVesselIDs: [],
+  trackedVesselSegments: []
 }
 
 export const createMapStore = (initState: MapState = defaultInitState) => {
@@ -81,17 +80,21 @@ export const createMapStore = (initState: MapState = defaultInitState) => {
         activePosition,
       }))
     },
-    addTrackedVesselMMSI: (vesselMMSI: number) => {
+    addTrackedVessel: (vesselId: number, segments: VesselExcursionSegment[]) => {
       set((state) => ({
         ...state,
-        trackedVesselMMSIs: [...state.trackedVesselMMSIs, vesselMMSI],
+        trackedVesselIDs: [...state.trackedVesselIDs, vesselId],
+        trackedVesselSegments: [...state.trackedVesselSegments, { vesselId, segments }]
       }))
     },
-    removeTrackedVesselMMSI: (vesselMMSI: number) => {
+    removeTrackedVessel: (vesselId: number) => {
       set((state) => ({
         ...state,
-        trackedVesselMMSIs: state.trackedVesselMMSIs.filter(
-          (mmsi) => mmsi !== vesselMMSI
+        trackedVesselIDs: state.trackedVesselIDs.filter(
+          (id) => id !== vesselId
+        ),
+        trackedVesselSegments: state.trackedVesselSegments.filter(
+          ({vesselId}) => vesselId !== vesselId
         ),
       }))
     },
@@ -101,10 +104,11 @@ export const createMapStore = (initState: MapState = defaultInitState) => {
         latestPositions: [],
       }))
     },
-    clearTrackedVesselMMSIs: () => {
+    cleartrackedVessels: () => {
       set((state) => ({
         ...state,
-        trackedVesselMMSIs: [],
+        trackedVesselIDs: [],
+        trackedVesselSegments: []
       }))
     },
   }))
